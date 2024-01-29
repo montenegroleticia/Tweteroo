@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "twetes")
-public class tweteModel {
+public class TweteModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
