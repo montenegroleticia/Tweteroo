@@ -1,6 +1,6 @@
 package com.tweteroo.api.models;
 
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.Id;
 
 import com.tweteroo.api.dtos.TweteDTO;
 
@@ -29,5 +29,5 @@ public class TweteModel {
     private Long id;
 
     @Column(length = 280, nullable = false)
-    private String text ;
+    private String text;
 }

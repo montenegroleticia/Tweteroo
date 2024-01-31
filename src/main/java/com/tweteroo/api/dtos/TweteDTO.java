@@ -9,5 +9,5 @@ public class TweteDTO {
 
     @NotBlank
     @Size(max = 280)
-    private String text ;
+    private String text;
 }
