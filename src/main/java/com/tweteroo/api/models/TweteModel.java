@@ -2,6 +2,8 @@ package com.tweteroo.api.models;
 
 import org.springframework.data.annotation.Id;
 
+import com.tweteroo.api.dtos.TweteDTO;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,6 +19,10 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "twetes")
 public class TweteModel {
+
+    public TweteModel(TweteDTO dto) {
+        this.text = dto.getText();
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

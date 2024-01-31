@@ -3,8 +3,11 @@ package com.tweteroo.api.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tweteroo.api.dtos.TweteDTO;
 import com.tweteroo.api.models.TweteModel;
 import com.tweteroo.api.repositories.TweteRepository;
+
+import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequestMapping("/")
 public class TweteController {
 
-    private TweteRepository tweteRepository;
+    final TweteRepository tweteRepository;
 
     TweteController(TweteRepository tweteRepository) {
         this.tweteRepository = tweteRepository;
@@ -43,8 +46,9 @@ public class TweteController {
     }
 
     @PostMapping
-    public String postMethodName(@RequestBody String body) {
-        return body;
+    public TweteModel postTwete(@RequestBody @Valid TweteDTO body) {
+        TweteModel twete = new TweteModel(body);
+        return tweteRepository.save(twete);
     }
 
     @PutMapping("/{id}")
