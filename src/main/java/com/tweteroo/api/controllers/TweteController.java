@@ -12,6 +12,8 @@ import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,35 +32,45 @@ public class TweteController {
     }
 
     @GetMapping
-    public List<TweteModel> getTwete() {
-        return tweteRepository.findAll();
+    public ResponseEntity<List<TweteModel>> getTwete() {
+        List<TweteModel> twetes = tweteRepository.findAll();
+        return ResponseEntity.status(HttpStatus.OK).body(twetes);
     }
 
     @GetMapping("/{id}")
-    public Optional<TweteModel> getTweteById(@PathVariable("id") Long id) {
+    public ResponseEntity<Object> getTweteById(@PathVariable("id") Long id) {
         Optional<TweteModel> twete = tweteRepository.findById(id);
 
         if (!twete.isPresent()) {
-            return Optional.empty();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Twete not found");
         }
 
-        return Optional.of(twete.get());
+        return ResponseEntity.status(HttpStatus.OK).body(twete);
     }
 
     @PostMapping
-    public TweteModel postTwete(@RequestBody @Valid TweteDTO body) {
+    public ResponseEntity<TweteModel> postTwete(@RequestBody @Valid TweteDTO body) {
         TweteModel twete = new TweteModel(body);
-        return tweteRepository.save(twete);
+        return ResponseEntity.status(HttpStatus.OK).body(tweteRepository.save(twete));
     }
 
     @PutMapping("/{id}")
-    public String putTwete(@PathVariable Long id, @RequestBody String body) {
-        return body + id;
+    public ResponseEntity<Object> putTwete(@PathVariable Long id, @RequestBody TweteDTO body) {
+        Optional<TweteModel> twete = tweteRepository.findById(id);
+
+        if (!twete.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Twete not found");
+        }
+
+        TweteModel newTwete = new TweteModel(body);
+        newTwete.setId(id);
+        return ResponseEntity.status(HttpStatus.OK).body(tweteRepository.save(newTwete));
     }
 
     @DeleteMapping("/{id}")
-    public String deleteTwete(@PathVariable Long id) {
-        return "Deletar item " + id;
+    public ResponseEntity<Void> deleteTwete(@PathVariable Long id) {
+        tweteRepository.deleteById(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }
