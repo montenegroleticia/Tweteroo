@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tweteroo.api.dtos.TweteDTO;
 import com.tweteroo.api.models.TweteModel;
-import com.tweteroo.api.repositories.TweteRepository;
+import com.tweteroo.api.services.TweteService;
 
 import jakarta.validation.Valid;
 
@@ -25,21 +25,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequestMapping("/")
 public class TweteController {
 
-    final TweteRepository tweteRepository;
+    final TweteService tweteService;
 
-    TweteController(TweteRepository tweteRepository) {
-        this.tweteRepository = tweteRepository;
+    TweteController(TweteService tweteService) {
+        this.tweteService = tweteService;
     }
 
     @GetMapping
     public ResponseEntity<List<TweteModel>> getTwete() {
-        List<TweteModel> twetes = tweteRepository.findAll();
+        List<TweteModel> twetes = tweteService.findAll();
         return ResponseEntity.status(HttpStatus.OK).body(twetes);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getTweteById(@PathVariable("id") Long id) {
-        Optional<TweteModel> twete = tweteRepository.findById(id);
+        Optional<TweteModel> twete = tweteService.findById(id);
 
         if (!twete.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Twete not found");
@@ -50,26 +50,23 @@ public class TweteController {
 
     @PostMapping
     public ResponseEntity<TweteModel> postTwete(@RequestBody @Valid TweteDTO body) {
-        TweteModel twete = new TweteModel(body);
-        return ResponseEntity.status(HttpStatus.OK).body(tweteRepository.save(twete));
+        return ResponseEntity.status(HttpStatus.OK).body(tweteService.save(body));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> putTwete(@PathVariable Long id, @RequestBody TweteDTO body) {
-        Optional<TweteModel> twete = tweteRepository.findById(id);
+        Optional<TweteModel> twete = tweteService.findById(id);
 
         if (!twete.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Twete not found");
         }
 
-        TweteModel newTwete = new TweteModel(body);
-        newTwete.setId(id);
-        return ResponseEntity.status(HttpStatus.OK).body(tweteRepository.save(newTwete));
+        return ResponseEntity.status(HttpStatus.OK).body(tweteService.update(body, id));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTwete(@PathVariable Long id) {
-        tweteRepository.deleteById(id);
+        tweteService.deleteById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
