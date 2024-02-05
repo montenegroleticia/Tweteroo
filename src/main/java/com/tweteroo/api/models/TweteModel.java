@@ -1,6 +1,7 @@
 package com.tweteroo.api.models;
 
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
 import com.tweteroo.api.dtos.TweteDTO;
 
